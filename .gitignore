@@ -1,8 +1,22 @@
-venv/
+# Environment & Secret Keys (CRITICAL: NEVER COMMIT THESE)
 .env
+*.env
+.env.*
+
+# Python Virtual Environment & Caches
+venv/
+.venv/
 __pycache__/
-*.duckdb
-data/*.duckdb
+*.pyc
+*.pyo
+
+# IDE & Editor Settings
 .vscode/
-# Ignore specific instruction files
+.idea/
+
+# Local Documents / Drafts
 Inventory & Supply Chain Anomaly Assistant.docx
+*.docx
+
+# Streamlit Local Runtime
+.streamlit/secrets.toml
