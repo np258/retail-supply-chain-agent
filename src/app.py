@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import duckdb
 import pandas as pd
@@ -20,7 +21,7 @@ def load_gold_data():
         # e.g., from src.pipeline import run_pipeline; run_pipeline()
         st.error(f"Database file not found at {DB_PATH}. Ensure data pipeline generates the file.")
         st.stop()
-        
+
     conn = duckdb.connect(DB_PATH)
     df = conn.execute("SELECT * FROM gold_inventory_anomalies").df()
     conn.close()
