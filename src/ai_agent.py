@@ -9,7 +9,7 @@ DB_PATH = "data/inventory.duckdb"
 
 class InventoryAIAgent:
     def __init__(self):
-        api_key = os.getenv("GROQ_API_KEY")
+        api_key = st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
         self.client = Groq(api_key=api_key)
 
     def get_gold_anomalies_summary(self):
