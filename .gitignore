@@ -20,3 +20,4 @@ Inventory & Supply Chain Anomaly Assistant.docx
 
 # Streamlit Local Runtime
 .streamlit/secrets.toml
+**/secrets.toml
