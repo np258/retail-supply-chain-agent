@@ -37,7 +37,7 @@ if option == "Gold Anomalies":
     col2.metric("Critical Items (<5 units)", len(df[df['anomaly_status'] == 'CRITICAL']))
     col3.metric("Warning Items (<15 units)", len(df[df['anomaly_status'] == 'WARNING']))
 
-    st.dataframe(df, use_container_width=True)
+    st.dataframe(df, width="stretch")
 
 elif option == "AI Purchase Order Generator":
     st.subheader("Groq AI Supply Chain Assistant")
