@@ -10,9 +10,25 @@ DB_PATH = "data/inventory.duckdb"
 
 class InventoryAIAgent:
     def __init__(self):
-        api_key = st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
+        #api_key = st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
+        try:
+            api_key = st.secrets["GROQ_API_KEY"]
+        except (KeyError, FileNotFoundError, Exception):
+            api_key = os.getenv("GROQ_API_KEY")
         self.client = Groq(api_key=api_key)
 
+    # Dynamic model fallback
+    def get_active_model(self):
+        preferred_models = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.6-27b"]
+        try:
+            available_models = [m.id for m in self.client.models.list().data]
+            for model in preferred_models:
+                if model in available_models:
+                    return model
+            return available_models[0]  # Fallback to any active model
+        except Exception:
+            return "openai/gpt-oss-120b"
+    
     def get_gold_anomalies_summary(self):
         conn = duckdb.connect(DB_PATH)
         anomalies = conn.execute("SELECT * FROM gold_inventory_anomalies").df().to_dict(orient="records")
@@ -31,7 +47,7 @@ class InventoryAIAgent:
         """
 
         response = self.client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model= self.get_active_model(),
             messages=[
                 {"role": "system", "content": "You are a helpful supply chain and data engineering assistant."},
                 {"role": "user", "content": prompt}
