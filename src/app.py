@@ -41,8 +41,17 @@ if option == "Gold Anomalies":
 
 elif option == "AI Purchase Order Generator":
     st.subheader("Groq AI Supply Chain Assistant")
-    if st.button("Generate Executive Report & Purchase Orders"):
-        with st.spinner("Analyzing Gold layer anomalies via Groq Llama 3.3..."):
+
+    # 1. Initialize session state key if it doesn't exist
+    if "executive_report" not in st.session_state:
+        st.session_state["executive_report"] = None
+
+    # 2. Trigger generation on button click and store result
+    if st.button("Generate Executive Report & Purchase Orders", width="stretch"):
+        with st.spinner("Analyzing Gold layer anomalies via Groq..."):
             agent = InventoryAIAgent()
-            report = agent.get_gold_anomalies_summary()
-            st.markdown(report)
+            st.session_state["executive_report"] = agent.get_gold_anomalies_summary()
+
+    # 3. Render report persistently if stored in session state
+    if st.session_state["executive_report"]:
+        st.markdown(st.session_state["executive_report"])
