@@ -13,6 +13,11 @@ option = st.sidebar.radio("View Section", ["Gold Anomalies", "AI Purchase Order 
 
 DB_PATH = "data/inventory.duckdb"
 
+# --- Cache AI Agent Initialization for Streamlit Cloud ---
+@st.cache_resource
+def get_ai_agent():
+    return InventoryAIAgent()
+
 @st.cache_data
 def load_gold_data():
     # If DB doesn't exist on Cloud container, run your pipeline build script first
@@ -46,11 +51,16 @@ elif option == "AI Purchase Order Generator":
     if "executive_report" not in st.session_state:
         st.session_state["executive_report"] = None
 
+    # Load cached agent instance
+    agent = get_ai_agent()
+
     # 2. Trigger generation on button click and store result
     if st.button("Generate Executive Report & Purchase Orders", width="stretch"):
         with st.spinner("Analyzing Gold layer anomalies via Groq..."):
-            agent = InventoryAIAgent()
             st.session_state["executive_report"] = agent.get_gold_anomalies_summary()
+
+    # Friendly instruction caption under the button
+    st.caption("💡 *Note: Real-time LLM generation takes 2–4 seconds. Click above to generate or refresh the analysis.*")
 
     # 3. Render report persistently if stored in session state
     if st.session_state["executive_report"]:
